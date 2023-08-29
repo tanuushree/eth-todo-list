@@ -7,6 +7,7 @@ App = {
         await App.loadAccount();
         await App.loadContract();
         await App.render();
+        web3.eth.defaultAccount = App.account;
     },
    
     //web3.js library to communicate with ethereum blockchain
@@ -85,6 +86,7 @@ App = {
           $newTaskTemplate.find('input')
                           .prop('name',taskId)
                           .prop('checked',taskCompleted)
+                          .on('click', App.toggleCompleted)
 
           if(taskCompleted){
             $('#completedTaskList').append($newTaskTemplate)
@@ -94,6 +96,20 @@ App = {
 
           $newTaskTemplate.show();
         }
+      },
+
+      createTask: async () => {
+        App.setLoading(true)
+        const content = $('#newTask').val()
+        await App.todoList.createTask(content)
+        window.location.reload()
+      },
+
+      toggleCompleted: async (e) => {
+        App.setLoading(true)
+        const taskId = e.target.name
+        await App.todoList.toggleCompleted(taskId)
+        window.location.reload()
       },
 
       setLoading: (boolean) =>{
